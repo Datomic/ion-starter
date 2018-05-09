@@ -1,0 +1,19 @@
+{:allow [;; transaction function
+         datomic.ion.starter/set-many
+
+         ;; query function
+         datomic.ion.starter/modes
+
+         ;; lambda handler
+         datomic.ion.starter/echo
+
+         ;; web application
+         datomic.ion.starter/get-tutorial-schema    
+         ]            
+ :lambdas {:echo
+           {:fn datomic.ion.starter/echo
+            :description "Echos input"}
+           :get-tutorial-schema
+           {:fn datomic.ion.starter/get-tutorial-schema
+            :description "returns the schema for the Datomic docs tutorial"}}
+ :app-name "<YOUR-APP-HERE>"}
