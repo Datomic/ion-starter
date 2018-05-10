@@ -1,5 +1,5 @@
 {:allow [;; transaction function
-         datomic.ion.starter/set-many
+         datomic.ion.starter/inc-attr
 
          ;; query function
          datomic.ion.starter/modes
