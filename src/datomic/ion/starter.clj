@@ -89,11 +89,20 @@ attr by amount, treating a missing value as 0."
    :body (-> (get-connection) d/db schema pp-str)})
 
 (def get-tutorial-schema
-  "API Gateway Ion for tutorial-schema-handler."
+  "API Gateway web service ion for tutorial-schema-handler."
   (apigw/ionize tutorial-schema-handler))
 
 (defn echo
+  "Lambda ion that simply echoes its input."
   [{:keys [context input]}]
   input)
+
+(defn f->c
+  "Example ion for use inside a query. Convert a number of degrees F
+to degrees C, returning a double. "
+  [f]
+  (-> (- f 32)
+      (* 5/9)
+      double))
 
 
