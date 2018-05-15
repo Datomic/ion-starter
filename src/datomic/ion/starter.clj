@@ -42,13 +42,6 @@ against a connection. Returns connection"
       (setup-var conn)
       conn)))
 
-(defn inc-attr
-  "Transaction function that increments the value of entity's card-1
-attr by amount, treating a missing value as 0."
-  [db entity attr amount]
-  (let [m (d/pull db {:eid entity :selector [:db/id attr]})]
-    [[:db/add (:db/id m) attr (+ (or (attr m) 0) amount)]]))
-
 (defn modes
   "Query aggregate fn that returns the set of modes for a collection."
   [coll]
@@ -80,6 +73,15 @@ attr by amount, treating a missing value as 0."
        :db.install/attribute
        (map #(update % :db/valueType :db/ident))
        (map #(update % :db/cardinality :db/ident))))
+
+;; Ions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn inc-attr
+  "Transaction function that increments the value of entity's card-1
+attr by amount, treating a missing value as 0."
+  [db entity attr amount]
+  (let [m (d/pull db {:eid entity :selector [:db/id attr]})]
+    [[:db/add (:db/id m) attr (+ (or (attr m) 0) amount)]]))
 
 (defn tutorial-schema-handler
   "Web handler that returns the schema for datomic-docs-tutorial"
