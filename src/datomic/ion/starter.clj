@@ -99,12 +99,15 @@ attr by amount, treating a missing value as 0."
   [{:keys [context input]}]
   input)
 
-(defn f->c
-  "Example ion for use inside a query. Convert a number of degrees F
-to degrees C, returning a double. "
-  [f]
-  (-> (- f 32)
-      (* 5/9)
-      double))
-
+(defn feature-item?
+  "Query ion exmaple. This predicate matches entities that
+should be featured in a promotion."
+  [db e]
+  ;;  While this particular predicate could also be implemented as
+  ;; additional clauses in query, your own programs can do anything
+  ;; they want here!
+  (let [{:keys [inv/color inv/size inv/type]} (d/pull db {:eid e :selector [:inv/color :inv/size :inv/type]})]
+    (and (= (:db/ident color) :green)
+         (= (:db/ident size) :xlarge)
+         (= (:db/ident type) :hat))))
 

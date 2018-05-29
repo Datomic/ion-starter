@@ -2,7 +2,7 @@
          datomic.ion.starter/inc-attr
 
          ;; query function
-         datomic.ion.starter/modes
+         datomic.ion.starter/feature-item?
 
          ;; lambda handler
          datomic.ion.starter/echo
