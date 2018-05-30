@@ -120,14 +120,15 @@ against a connection. Returns connection"
 (defn items-by-type-web*
   "Lambda ion that returns sample database items matching type."
   [{:keys [headers body]}]
-  (if-let [type (some-> (read-edn body) keyword)]
-    {:status 200
-     :headers {"Content-Type" "application/edn"} 
-     :body (-> (items-by-type* (d/db (get-connection)) type)
-               pp-str)}
-    {:status 400
-     :headers {}
-     :body "Expected a body string with item type"}))
+  (let [type (some-> body read-edn)]
+    (if (keyword? type)
+      {:status 200
+       :headers {"Content-Type" "application/edn"} 
+       :body (-> (items-by-type* (d/db (get-connection)) type)
+                 pp-str)}
+      {:status 400
+       :headers {}
+       :body "Expected a request body keyword naming a type"})))
 
 (def items-by-type-web
   "API Gateway web service ion for items-by-type"
