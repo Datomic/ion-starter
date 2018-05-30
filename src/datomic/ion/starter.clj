@@ -3,6 +3,7 @@
 
 (ns datomic.ion.starter
   (:require
+   [clojure.data.json :as json]
    [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.pprint :as pp]
@@ -76,13 +77,6 @@ against a connection. Returns connection"
 
 ;; Ions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn inc-attr
-  "Transaction function that increments the value of entity's card-1
-attr by amount, treating a missing value as 0."
-  [db entity attr amount]
-  (let [m (d/pull db {:eid entity :selector [:db/id attr]})]
-    [[:db/add (:db/id m) attr (+ (or (attr m) 0) amount)]]))
-
 (defn tutorial-schema-handler
   "Web handler that returns the schema for datomic-docs-tutorial"
   [{:keys [headers body]}]
@@ -95,9 +89,66 @@ attr by amount, treating a missing value as 0."
   (apigw/ionize tutorial-schema-handler))
 
 (defn echo
-  "Lambda ion that simply echoes its input."
-  [{:keys [context input]}]
+  "Lambda ion that simply echoes its input"
+  [{:keys [contect input]}]
   input)
+
+(defn items-by-type*
+  "Returns info about items matching type"
+  [db type]
+  (d/q '[:find ?sku ?size ?color ?featured
+         :in $ ?type
+         :where
+         [?e :inv/type ?type]
+         [?e :inv/sku ?sku]
+         [?e :inv/size ?size]
+         [?e :inv/color ?color]
+         [(datomic.ion.starter/feature-item? $ ?e) ?featured]]
+       db type))
+
+(defn items-by-type
+  "Lambda ion that returns sample database items matching type."
+  [{:keys [input]}]
+  (-> (items-by-type* (d/db (get-connection))
+                      (-> input json/read-str keyword))
+      pp-str))
+
+(defn read-edn
+  [input-stream]
+  (some-> input-stream io/reader (java.io.PushbackReader.) edn/read))
+
+(defn items-by-type-web*
+  "Lambda ion that returns sample database items matching type."
+  [{:keys [headers body]}]
+  (if-let [type (some-> (read-edn body) keyword)]
+    {:status 200
+     :headers {"Content-Type" "application/edn"} 
+     :body (-> (items-by-type* (d/db (get-connection)) type)
+               pp-str)}
+    {:status 400
+     :headers {}
+     :body "Expected a body string with item type"}))
+
+(def items-by-type-web
+  "API Gateway web service ion for items-by-type"
+  (apigw/ionize items-by-type-web*))
+
+(defn create-item
+  "Transaction fn that creates data to make a new item"
+  [db sku size color type]
+  [{:inv/sku sku
+    :inv/color (keyword color)
+    :inv/size (keyword size)
+    :inv/type (keyword type)}])
+
+(defn add-item
+  "Lambda ion that adds an item, returns database t."
+  [{:keys [input]}]
+  (let [args (-> input json/read-str)
+        conn (get-connection)
+        tx [`(create-item ~@args)]
+        result (d/transact conn {:tx-data tx})]
+    (pp-str {:t (-> result :db-after :t)})))
 
 (defn feature-item?
   "Query ion exmaple. This predicate matches entities that

@@ -1,13 +1,16 @@
-{:allow [;; transaction function
-         datomic.ion.starter/inc-attr
+{:allow [;; transaction functions
+         datomic.ion.starter/create-item
 
-         ;; query function
+         ;; query functions
          datomic.ion.starter/feature-item?
 
-         ;; lambda handler
+         ;; lambda handlers
          datomic.ion.starter/echo
+         datoimc.ion.starter/add-item
+         datomic.ion.starter/items-by-type
 
-         ;; web application
+         ;; web applications
+         datomic.ion.starter/items-by-type-web
          datomic.ion.starter/get-tutorial-schema    
          ]            
  :lambdas {:echo
@@ -15,5 +18,12 @@
             :description "Echos input"}
            :get-tutorial-schema
            {:fn datomic.ion.starter/get-tutorial-schema
-            :description "returns the schema for the Datomic docs tutorial"}}
+            :description "returns the schema for the Datomic docs tutorial"}
+           :items-by-type
+           {:fn datomic.ion.starter/items-by-type
+            :description "returns info about items with a particular type"}
+           :items-by-type-web
+           {:fn datomic.ion.starter/items-by-type
+            :description "web app that returns info about items with a particular type"}}
  :app-name "<YOUR-APP-HERE>"}
+
