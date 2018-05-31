@@ -11,12 +11,16 @@
    [datomic.java.io.bbuf :as bbuf]
    [datomic.ion.lambda.api-gateway :as apigw]))
 
-(def client (d/client {:server-type :ion
-                       :region "us-east-1"
-                       :system "stu-8"
-                       :query-group "stu-8"
-                       :endpoint "http://entry.stu-8.us-east-1.datomic.net:8182/"
-                       :proxy-port 8182}))
+(def get-client
+  "This function will return a local implementation of the client
+interface when run on a Datomic compute node. If you want to call
+locally, fill in the correct values in the map."
+  (memoize #(d/client {:server-type :ion
+                       :region "setme"
+                       :system "setme"
+                       :query-group "setme"
+                       :endpoint "setme"
+                       :proxy-port 8182})))
 
 (defn- anom-map
   [category msg]
@@ -34,7 +38,8 @@
 against a connection. Returns connection"
   [db-name setup-sym]
   (require (symbol (namespace setup-sym)))
-  (let [setup-var (resolve setup-sym)]
+  (let [setup-var (resolve setup-sym)
+        client (get-client)]
     (when-not setup-var
       (anomaly! :not-found (str "Could not resolve " setup-sym)))
     (d/create-database client {:db-name db-name})
