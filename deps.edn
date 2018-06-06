@@ -2,11 +2,11 @@
 ;; All rights reserved.
 
 {:paths ["src" "resources"]
- :deps {com.datomic/client-cloud {:mvn/version "0.8.52"}
+ :deps {com.datomic/client-cloud {:mvn/version "0.8.50"}
         com.datomic/ion {:mvn/version "0.9.7"}
         org.clojure/data.json {:mvn/version "0.2.6"}
         org.clojure/clojure {:mvn/version "1.9.0"}}
  :mvn/repos {"datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}}
  :aliases
- {:dev {:extra-deps {com.datomic/ion-dev {:mvn/version "0.9.159"}}}}}
+ {:dev {:extra-deps {com.datomic/ion-dev {:mvn/version "0.9.160"}}}}}
 

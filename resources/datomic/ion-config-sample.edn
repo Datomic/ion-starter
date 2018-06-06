@@ -18,6 +18,7 @@
             :description "Echos input"}
            :get-tutorial-schema
            {:fn datomic.ion.starter/get-tutorial-schema
+            :integration :api-gateway/proxy
             :description "returns the schema for the Datomic docs tutorial"}
            :add-item
            {:fn datomic.ion.starter/add-item
@@ -27,6 +28,7 @@
             :description "returns info about items with a particular type"}
            :items-by-type-web
            {:fn datomic.ion.starter/items-by-type-web
+            :integration :api-gateway/proxy
             :description "web app that returns info about items with a particular type"}}
  :app-name "<YOUR-APP-HERE>"}
 
