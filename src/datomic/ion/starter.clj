@@ -152,7 +152,7 @@ against a connection. Returns connection"
   [{:keys [input]}]
   (let [args (-> input json/read-str)
         conn (get-connection)
-        tx [`(create-item ~@args)]
+        tx [(list* 'datomic.ion.starter/create-item args)]
         result (d/transact conn {:tx-data tx})]
     (pp-str {:t (-> result :db-after :t)})))
 
