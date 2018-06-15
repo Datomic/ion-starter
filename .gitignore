@@ -1,4 +1,3 @@
 classes/*
 target/*
-resources/datomic/ion-config.edn
 .cpcache/*
