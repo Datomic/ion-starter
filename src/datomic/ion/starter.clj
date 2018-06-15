@@ -8,7 +8,6 @@
    [clojure.java.io :as io]
    [clojure.pprint :as pp]
    [datomic.client.api :as d]
-   [datomic.java.io.bbuf :as bbuf]
    [datomic.ion.lambda.api-gateway :as apigw]))
 
 (def get-client
