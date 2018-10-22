@@ -94,7 +94,7 @@ against a connection. Returns connection"
 
 (defn echo
   "Lambda ion that simply echoes its input"
-  [{:keys [contect input]}]
+  [{:keys [context input]}]
   input)
 
 (defn items-by-type*
