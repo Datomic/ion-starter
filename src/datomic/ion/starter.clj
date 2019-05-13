@@ -110,7 +110,7 @@ against a connection. Returns connection"
          #_[(datomic.ion.starter/feature-item? $ ?e) ?featured]]
        db type))
 
-(defn items-by-type
+(defn get-items-by-type
   "Lambda ion that returns sample database items matching type."
   [{:keys [input]}]
   (-> (items-by-type* (d/db (get-connection))
@@ -121,8 +121,8 @@ against a connection. Returns connection"
   [input-stream]
   (some-> input-stream io/reader (java.io.PushbackReader.) edn/read))
 
-(defn items-by-type-web*
-  "Lambda ion that returns sample database items matching type."
+(defn items-by-type
+  "HTTP handler that returns sample database items matching type."
   [{:keys [headers body]}]
   (let [type (some-> body read-edn)]
     (if (keyword? type)
@@ -134,9 +134,10 @@ against a connection. Returns connection"
        :headers {}
        :body "Expected a request body keyword naming a type"})))
 
-(def items-by-type-web
-  "API Gateway web service ion for items-by-type"
-  (apigw/ionize items-by-type-web*))
+(def items-by-type-ionize
+  "Ionization of items-by-type for use with AWS API Gateway lambda
+proxy integration."
+  (apigw/ionize items-by-type))
 
 (defn create-item
   "Transaction fn that creates data to make a new item"
