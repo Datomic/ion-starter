@@ -3,15 +3,6 @@
 
          ;; query functions
          datomic.ion.starter/feature-item?
-
-         ;; lambda handlers
-         datomic.ion.starter/echo
-         datomic.ion.starter/add-item
-         datomic.ion.starter/items-by-type
-
-         ;; web applications
-         datomic.ion.starter/items-by-type-web
-         datomic.ion.starter/get-tutorial-schema    
          ]            
  :lambdas {:echo
            {:fn datomic.ion.starter/echo
