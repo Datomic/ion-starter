@@ -14,12 +14,13 @@
            :add-item
            {:fn datomic.ion.starter/add-item
             :description "adds an inventory item, using a tx fn"}
-           :items-by-type
-           {:fn datomic.ion.starter/items-by-type
-            :description "returns info about items with a particular type"}
-           :items-by-type-web
-           {:fn datomic.ion.starter/items-by-type-web
+           :get-items-by-type
+           {:fn datomic.ion.starter/get-items-by-type
+            :description "HTTP handler that returns items by type"}
+           :items-by-type-ionize
+           {:fn datomic.ion.starter/items-by-type-ionize
             :integration :api-gateway/proxy
-            :description "web app that returns info about items with a particular type"}}
+            :description "ionized version of items-by-type"}}
+ :http-direct {:handler-fn datomic.ion.starter/items-by-type}
  :app-name "<YOUR-APP-HERE>"}
 
