@@ -156,7 +156,7 @@ against a connection. Returns connection"
     (pp-str {:t (-> result :db-after :t)})))
 
 (defn feature-item?
-  "Query ion exmaple. This predicate matches entities that
+  "Query ion example. This predicate matches entities that
 should be featured in a promotion."
   [db e]
   ;;  While this particular predicate could also be implemented as
