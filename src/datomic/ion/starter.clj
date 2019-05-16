@@ -124,7 +124,8 @@ against a connection. Returns connection"
               [?colorid :db/ident ?color]]
             db type)
        (map (partial interleave [:type :sku :size :color]))
-       (map (partial apply hash-map))))
+       (map (partial apply hash-map))
+       (into #{})))
 
 (defn get-items-by-type
   "Lambda ion that returns db-centric info about items matching type."
