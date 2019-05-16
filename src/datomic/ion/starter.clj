@@ -151,7 +151,7 @@ against a connection. Returns connection"
        :headers {}
        :body "Expected a request body keyword naming a type"})))
 
-(def items-by-type-ionize
+(def items-by-type-ionized
   "Ionization of items-by-type for use with AWS API Gateway lambda
 proxy integration."
   (apigw/ionize items-by-type))
