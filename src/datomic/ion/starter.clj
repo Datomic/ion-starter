@@ -85,7 +85,7 @@ against a connection. Returns connection"
   "Web handler that returns the schema for datomic-docs-tutorial"
   [{:keys [headers body]}]
   {:status 200
-   :headers {"Content-Type" "application/edn"} 
+   :headers {"Content-Type" "application/edn"}
    :body (-> (get-connection) d/db schema pp-str)})
 
 (def get-tutorial-schema
@@ -97,10 +97,10 @@ against a connection. Returns connection"
   [{:keys [context input]}]
   input)
 
-(defn items-by-type*
-  "Returns info about items matching type"
+(defn db-centric-items-by-type
+  "Returns db-centric info about items matching type."
   [db type]
-  (d/q '[:find ?sku ?size ?color
+  (d/q '[:find ?sku ?size ?color #_?featured
          :in $ ?type
          :where
          [?e :inv/type ?type]
@@ -110,11 +110,27 @@ against a connection. Returns connection"
          #_[(datomic.ion.starter/feature-item? $ ?e) ?featured]]
        db type))
 
+(defn self-describing-items-by-type
+  "Returns self-describing info about items matching type."
+  [db type]
+  (->> (d/q '[:find ?type ?sku ?size ?color
+              :in $ ?type
+              :where
+              [?e :inv/type ?type]
+              [?e :inv/sku ?sku]
+              [?e :inv/size ?sizeid]
+              [?e :inv/color ?colorid]
+              [?sizeid :db/ident ?size]
+              [?colorid :db/ident ?color]]
+            db type)
+       (map (partial interleave [:type :sku :size :color]))
+       (map (partial apply hash-map))))
+
 (defn get-items-by-type
-  "Lambda ion that returns sample database items matching type."
+  "Lambda ion that returns db-centric info about items matching type."
   [{:keys [input]}]
-  (-> (items-by-type* (d/db (get-connection))
-                      (-> input json/read-str keyword))
+  (-> (db-centric-items-by-type (d/db (get-connection))
+                                (-> input json/read-str keyword))
       pp-str))
 
 (defn read-edn
@@ -122,13 +138,13 @@ against a connection. Returns connection"
   (some-> input-stream io/reader (java.io.PushbackReader.) edn/read))
 
 (defn items-by-type
-  "HTTP handler that returns sample database items matching type."
+  "HTTP handler that returns self-describing info about items matching type."
   [{:keys [headers body]}]
   (let [type (some-> body read-edn)]
     (if (keyword? type)
       {:status 200
-       :headers {"Content-Type" "application/edn"} 
-       :body (-> (items-by-type* (d/db (get-connection)) type)
+       :headers {"Content-Type" "application/edn"}
+       :body (-> (self-describing-items-by-type (d/db (get-connection)) type)
                  pp-str)}
       {:status 400
        :headers {}
@@ -167,4 +183,3 @@ should be featured in a promotion."
     (and (= (:db/ident color) :green)
          (= (:db/ident size) :xlarge)
          (= (:db/ident type) :hat))))
-
