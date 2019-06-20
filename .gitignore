@@ -1,3 +1,4 @@
 classes/*
 target/*
 .cpcache/*
+.datomic-ions/*
