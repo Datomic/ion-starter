@@ -14,17 +14,6 @@
    :headers {"Content-Type" "application/edn"}
    :body body})
 
-(defn get-schema
-  "Web handler that returns the schema for datomic-docs-tutorial"
-  [{:keys [headers body]}]
-  (-> (starter/get-db)
-      starter/get-schema
-      edn/write-str
-      edn-response))
-
-(def get-schema-lambda-proxy
-  (apigw/ionize get-schema))
-
 (defn get-items-by-type
   "Web handler that returns info about items matching type."
   [{:keys [headers body]}]

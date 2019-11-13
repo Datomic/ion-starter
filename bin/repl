@@ -1,0 +1,3 @@
+#!/bin/bash
+
+clojure -J-Xmx4g -Adev:rebl -m cognitect.rebl
