@@ -1,0 +1,5 @@
+{:server-type :ion
+ :region "us-east-1"
+ :system "mbrainz-stu"
+ :endpoint "http://entry.mbrainz-stu.us-east-1.datomic.net:8182"
+ :proxy-port 8182}

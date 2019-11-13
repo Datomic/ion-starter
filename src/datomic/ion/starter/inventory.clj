@@ -1,7 +1,7 @@
 ;; Copyright (c) Cognitect, Inc.
 ;; All rights reserved.
 
-(ns datomic.ion.starter.examples.tutorial
+(ns datomic.ion.starter.inventory
   (:require
    [datomic.client.api :as d]
    [datomic.ion.starter :as starter]))
@@ -20,13 +20,13 @@
     :db/unique :db.unique/identity
     :db/cardinality :db.cardinality/one}
    {:db/ident :inv/color
-    :db/valueType :db.type/ref
+    :db/valueType :db.type/keyword
     :db/cardinality :db.cardinality/one}
    {:db/ident :inv/size
-    :db/valueType :db.type/ref
+    :db/valueType :db.type/keyword
     :db/cardinality :db.cardinality/one}
    {:db/ident :inv/type
-    :db/valueType :db.type/ref
+    :db/valueType :db.type/keyword
     :db/cardinality :db.cardinality/one}])
 
 (def sample-data

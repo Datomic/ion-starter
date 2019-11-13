@@ -1,0 +1,22 @@
+(load-file "siderail/user.repl")
+
+;; Edit resources/datomic/ion/starter/config.edn to match your system
+
+;; test that config works
+(def client (starter/get-client))
+
+(def conn (starter/get-connection))
+@(def db (d/db conn))
+
+;; test plain functions
+(starter/get-schema db)
+(starter/get-items-by-type db :shirt '[:inv/sku :inv/color :inv/size])
+
+;; test lambda entry points
+(lambdas/get-schema nil)
+(lambdas/get-items-by-type {:input (json/write-str "shirt")})
+
+;; test web entry points
+(http/get-schema {})
+(http/get-items-by-type {:body (edn/input-stream :shirt)})
+

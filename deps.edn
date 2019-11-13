@@ -2,10 +2,12 @@
 ;; All rights reserved.
 
 {:paths ["src" "resources"]
- :deps {com.datomic/ion {:mvn/version "0.9.35"}
+ :deps {com.cognitect/anomalies {:mvn/version "0.1.12"}
+        com.datomic/ion {:mvn/version "0.9.35"}
         org.clojure/data.json {:mvn/version "0.2.6"}
-        org.clojure/clojure {:mvn/version "1.10.0"}}
+        org.clojure/clojure {:mvn/version "1.10.1"}}
  :mvn/repos {"datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}}
  :aliases
  {:dev {:extra-deps {com.datomic/client-cloud {:mvn/version "0.8.78"}
-                     com.datomic/ion-dev {:mvn/version "0.9.234"}}}}}
+                     com.datomic/ion-dev {:mvn/version "0.9.234"}}}
+  :rebl {:extra-deps {com.cognitect/rebl #:local{:root "REBL-0.9.218.jar"}}}}}

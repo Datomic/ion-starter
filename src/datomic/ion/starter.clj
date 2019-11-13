@@ -3,28 +3,25 @@
 
 (ns datomic.ion.starter
   (:require
-   [clojure.data.json :as json]
    [clojure.edn :as edn]
    [clojure.java.io :as io]
-   [clojure.pprint :as pp]
-   [datomic.client.api :as d]
-   [datomic.ion.lambda.api-gateway :as apigw]))
+   [clojure.string :as str]
+   [cognitect.anomalies :as anom]
+   [datomic.client.api :as d]))
 
 (def get-client
   "This function will return a local implementation of the client
 interface when run on a Datomic compute node. If you want to call
 locally, fill in the correct values in the map."
-  (memoize #(d/client {:server-type :ion
-                       :region "setme"
-                       :system "setme"
-                       :query-group "setme"
-                       :endpoint "setme"
-                       :proxy-port 8182})))
+  (memoize #(if-let [r (io/resource "datomic/ion/starter/config.edn")]
+              (d/client (edn/read-string (slurp r)))
+              (throw (RuntimeException. "You need to add a resource datomic/ion/starter/config.edn with your connection config")))))
 
 (defn- anom-map
+  "Helper for anomaly!"
   [category msg]
-  {:cognitect.anomalies/category (keyword "cognitect.anomalies" (name category))
-   :cognitect.anomalies/message msg})
+  {::anom/category (keyword "cognitect.anomalies" (name category))
+   ::anom/message msg})
 
 (defn- anomaly!
   ([name msg]
@@ -32,7 +29,7 @@ locally, fill in the correct values in the map."
   ([name msg cause]
      (throw (ex-info msg (anom-map name msg) cause))))
 
-(defn ensure-dataset
+(defn- ensure-dataset
   "Ensure that a database named db-name exists, running setup-fn
 against a connection. Returns connection"
   [db-name setup-sym]
@@ -47,140 +44,34 @@ against a connection. Returns connection"
       (setup-var conn)
       conn)))
 
-(defn modes
-  "Query aggregate fn that returns the set of modes for a collection."
-  [coll]
-  (->> (frequencies coll)
-       (reduce
-        (fn [[modes ct] [k v]]
-          (cond
-           (< v ct)  [modes ct]
-           (= v ct)  [(conj modes k) ct]
-           (> v ct) [#{k} v]))
-        [#{} 2])
-       first))
-
-(defn pp-str
-  [x]
-  (binding [*print-length* nil
-            *print-level* nil]
-    (with-out-str (pp/pprint x))))
-
 (defn get-connection
+  "Returns shared connection."
   []
   (ensure-dataset "datomic-docs-tutorial"
-                  'datomic.ion.starter.examples.tutorial/load-dataset))
+                  'datomic.ion.starter.inventory/load-dataset))
 
-(defn schema
+(defn get-db
+  "Returns current db value from shared connection."
+  []
+  (d/db (get-connection)))
+
+(defn get-schema
   "Returns a data representation of db schema."
   [db]
   (->> (d/pull db '{:eid 0 :selector [{:db.install/attribute [*]}]})
        :db.install/attribute
+       (remove (fn [m] (str/starts-with? (namespace (:db/ident m)) "db")))
        (map #(update % :db/valueType :db/ident))
        (map #(update % :db/cardinality :db/ident))))
 
-;; Ions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defn tutorial-schema-handler
-  "Web handler that returns the schema for datomic-docs-tutorial"
-  [{:keys [headers body]}]
-  {:status 200
-   :headers {"Content-Type" "application/edn"}
-   :body (-> (get-connection) d/db schema pp-str)})
-
-(def get-tutorial-schema
-  "API Gateway web service ion for tutorial-schema-handler."
-  (apigw/ionize tutorial-schema-handler))
-
-(defn echo
-  "Lambda ion that simply echoes its input"
-  [{:keys [context input]}]
-  input)
-
-(defn db-centric-items-by-type
-  "Returns db-centric info about items matching type."
-  [db type]
-  (d/q '[:find ?sku ?size ?color ?featured
-         :in $ ?type
-         :where
-         [?e :inv/type ?type]
-         [?e :inv/sku ?sku]
-         [?e :inv/size ?size]
-         [?e :inv/color ?color]
-         [(datomic.ion.starter/feature-item? $ ?e) ?featured]]
-       db type))
-
-(defn self-describing-items-by-type
-  "Returns self-describing info about items matching type."
-  [db type]
-  (->> (d/q '[:find ?type ?sku ?size ?color
-              :in $ ?type
-              :where
-              [?e :inv/type ?type]
-              [?e :inv/sku ?sku]
-              [?e :inv/size ?sizeid]
-              [?e :inv/color ?colorid]
-              [?sizeid :db/ident ?size]
-              [?colorid :db/ident ?color]]
-            db type)
-       (map (partial interleave [:type :sku :size :color]))
-       (map (partial apply hash-map))
-       (into #{})))
-
 (defn get-items-by-type
-  "Lambda ion that returns db-centric info about items matching type."
-  [{:keys [input]}]
-  (-> (db-centric-items-by-type (d/db (get-connection))
-                                (-> input json/read-str keyword))
-      pp-str))
+  "Returns pull maps describing all items matching type"
+  [db type pull-expr]
+  (d/q '[:find (pull ?e pull-expr)
+         :in $ ?type pull-expr
+         :where [?e :inv/type ?type]]
+       db type pull-expr))
 
-(defn read-edn
-  [input-stream]
-  (some-> input-stream io/reader (java.io.PushbackReader.) edn/read))
 
-(defn items-by-type
-  "HTTP handler that returns self-describing info about items matching type."
-  [{:keys [headers body]}]
-  (let [type (some-> body read-edn)]
-    (if (keyword? type)
-      {:status 200
-       :headers {"Content-Type" "application/edn"}
-       :body (-> (self-describing-items-by-type (d/db (get-connection)) type)
-                 pp-str)}
-      {:status 400
-       :headers {}
-       :body "Expected a request body keyword naming a type"})))
 
-(def items-by-type-ionized
-  "Ionization of items-by-type for use with AWS API Gateway lambda
-proxy integration."
-  (apigw/ionize items-by-type))
 
-(defn create-item
-  "Transaction fn that creates data to make a new item"
-  [db sku size color type]
-  [{:inv/sku sku
-    :inv/color (keyword color)
-    :inv/size (keyword size)
-    :inv/type (keyword type)}])
-
-(defn add-item
-  "Lambda ion that adds an item, returns database t."
-  [{:keys [input]}]
-  (let [args (-> input json/read-str)
-        conn (get-connection)
-        tx [(list* 'datomic.ion.starter/create-item args)]
-        result (d/transact conn {:tx-data tx})]
-    (pp-str {:t (-> result :db-after :t)})))
-
-(defn feature-item?
-  "Query ion example. This predicate matches entities that
-should be featured in a promotion."
-  [db e]
-  ;;  While this particular predicate could also be implemented as
-  ;; additional clauses in query, your own programs can do anything
-  ;; they want here!
-  (let [{:keys [inv/color inv/size inv/type]} (d/pull db {:eid e :selector [:inv/color :inv/size :inv/type]})]
-    (and (= (:db/ident color) :green)
-         (= (:db/ident size) :xlarge)
-         (= (:db/ident type) :hat))))
