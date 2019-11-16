@@ -10,9 +10,8 @@
    [datomic.client.api :as d]))
 
 (def get-client
-  "This function will return a local implementation of the client
-interface when run on a Datomic compute node. If you want to call
-locally, fill in the correct values in the map."
+  "Return a shared client. Set datomic/ion/starter/config.edn resource
+before calling this function."
   (memoize #(if-let [r (io/resource "datomic/ion/starter/config.edn")]
               (d/client (edn/read-string (slurp r)))
               (throw (RuntimeException. "You need to add a resource datomic/ion/starter/config.edn with your connection config")))))
