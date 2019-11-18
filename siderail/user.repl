@@ -4,7 +4,8 @@
  '[clojure.pprint :as pp]
  '[datomic.client.api :as d]
  '[datomic.ion.starter :as starter]
- '[datomic.ion.starter.edn :as edn]
+ '[datomic.ion.starter.attributes :as attrs]
+ '[datomic.ion.starter.edn :as s-edn]
  '[datomic.ion.starter.lambdas :as lambdas]
  '[datomic.ion.starter.http :as http]
  '[datomic.ion.starter.inventory :as inventory])

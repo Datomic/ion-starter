@@ -1,4 +1,5 @@
-{:lambdas {:get-schema
+{:allow [datomic.ion.starter.attributes/valid-sku?]
+ :lambdas {:get-schema
            {:fn datomic.ion.starter.lambdas/get-schema
             :description "returns the schema for the Datomic docs tutorial"}
            :get-items-by-type
