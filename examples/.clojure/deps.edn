@@ -1,0 +1,12 @@
+;; This minimal example shows a .clojure/deps.edn file configured for
+;; ion development (https://docs.datomic.com/cloud/ions/ions.html).
+
+;; Your deps.edn should probably be a lot more interesting than this, e.g.
+;; https://github.com/seancorfield/dot-clojure.
+
+{:aliases
+ {:ion-dev
+  {:deps {com.datomic/ion-dev {:mvn/version "0.9.243"}}
+   :main-opts ["-m" "datomic.ion.dev"]}
+  :mvn/repos
+  {"datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}}}
