@@ -7,12 +7,14 @@
 (def conn (starter/get-connection))
 
 ;; install the fn in the db
-(d/transact conn {:tx-data [{:db/ident :inv/sku
-                             :db.attr/preds 'datomic.ion.starter.attributes/valid-sku?}]})
+(def tx [{:db/ident :inv/sku
+          :db.attr/preds 'datomic.ion.starter.attributes/valid-sku?}])
+(d/transact conn {:tx-data tx})
 
 ;; test the fn in the db
 (def with-db (d/with-db conn))
-(d/with with-db {:tx-data [{:inv/sku "not-a-sku"}]})
+(d/with with-db {:tx-data [{:db/id "should-not-work"
+                            :inv/sku "not-a-sku"}]})
 
 
 

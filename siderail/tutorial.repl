@@ -17,6 +17,5 @@
 (lambdas/get-items-by-type {:input (json/write-str "shirt")})
 
 ;; test web entry points
-(http/get-schema {})
-(http/get-items-by-type {:body (edn/input-stream :shirt)})
+(http/get-items-by-type {:body (s-edn/input-stream :shirt)})
 
