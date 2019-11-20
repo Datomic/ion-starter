@@ -1,12 +1,7 @@
 classes/*
 target/*
 .cpcache/*
-<<<<<<< HEAD
 .idea/*
 .rebl/*
 REBL-*.jar
 .datomic-ions/*
-
-=======
-.datomic-ions/*
->>>>>>> efc93063578719ce5d754e0e960bfc4b7c94b0af
