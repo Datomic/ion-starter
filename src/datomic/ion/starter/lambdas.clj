@@ -23,3 +23,8 @@
                              [:inv/sku :inv/size :inv/color])
       edn/write-str))
 
+(defn ensure-sample-dataset
+  "Lambda ion that creates database and transacts sample data."
+  [_]
+  (-> (starter/ensure-sample-dataset)
+      edn/write-str))
