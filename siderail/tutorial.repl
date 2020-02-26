@@ -5,6 +5,9 @@
 ;; test that config works
 (def client (starter/get-client))
 
+;; create database and load sample data:
+(starter/ensure-sample-dataset)
+
 (def conn (starter/get-connection))
 @(def db (d/db conn))
 

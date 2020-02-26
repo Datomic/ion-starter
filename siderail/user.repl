@@ -8,4 +8,5 @@
  '[datomic.ion.starter.edn :as s-edn]
  '[datomic.ion.starter.lambdas :as lambdas]
  '[datomic.ion.starter.http :as http]
- '[datomic.ion.starter.inventory :as inventory])
+ '[datomic.ion.starter.inventory :as inventory]
+ '[datomic.ion.starter.utils :as utils])
