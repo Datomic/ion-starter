@@ -9,4 +9,4 @@
   {:deps {com.datomic/ion-dev {:mvn/version "0.9.243"}}
    :main-opts ["-m" "datomic.ion.dev"]}
   :mvn/repos
-  {"datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}}}
+  {"datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}}}}
