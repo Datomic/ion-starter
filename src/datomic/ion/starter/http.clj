@@ -5,8 +5,7 @@
   (:require
    [clojure.java.io :as io]
    [datomic.ion.starter :as starter]
-   [datomic.ion.starter.edn :as edn]
-   [datomic.ion.lambda.api-gateway :as apigw]))
+   [datomic.ion.starter.edn :as edn]))
 
 (defn edn-response
   [body]
@@ -27,7 +26,6 @@
        :headers {}
        :body "Expected a request body keyword naming a type"})))
 
-(def get-items-by-type-lambda-proxy
-  (apigw/ionize get-items-by-type))
+
 
 
