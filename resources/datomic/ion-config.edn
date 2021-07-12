@@ -9,4 +9,4 @@
            {:fn datomic.ion.starter.lambdas/get-items-by-type
             :description "return inventory items by type"}}
  :http-direct {:handler-fn datomic.ion.starter.http/get-items-by-type}
- :app-name "<your-app-name-here>"}
+ :app-name "toy-solo-5"}
