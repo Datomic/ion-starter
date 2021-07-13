@@ -1,5 +1,5 @@
 {:server-type :ion
  :region "us-east-1"
- :system "toy-solo-5"
+ :system "mbrainz-stu"
  ;ClientApiGatewayEndpoint output from cloudformation stack
- :endpoint "https://a3id5matpd.execute-api.us-east-1.amazonaws.com/"}
+ :endpoint "https://a2id5latdd.execute-api.us-east-1.amazonaws.com/"}
