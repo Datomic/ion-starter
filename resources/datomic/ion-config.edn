@@ -7,9 +7,6 @@
             :description "returns the schema for the Datomic docs tutorial"}
            :get-items-by-type
            {:fn datomic.ion.starter.lambdas/get-items-by-type
-            :description "return inventory items by type"}
-           :get-items-by-type-lambda-proxy
-           {:fn datomic.ion.starter.http/get-items-by-type-lambda-proxy
-            :description "lambda proxy integration entry point for get-items-by-type"}}
+            :description "return inventory items by type"}}
  :http-direct {:handler-fn datomic.ion.starter.http/get-items-by-type}
  :app-name "reltest-781-prod"}
