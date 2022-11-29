@@ -61,5 +61,5 @@
   (d/q {:query '[:find (pull ?e pull-expr)
                  :in $ ?type pull-expr
                  :where [?e :inv/type ?type]]
-        :args     db type pull-expr
+        :args     [db type pull-expr]
         :io-context :items-by}))
