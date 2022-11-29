@@ -58,7 +58,8 @@
 (defn get-items-by-type
   "Returns pull maps describing all items matching type"
   [db type pull-expr]
-  (d/q '[:find (pull ?e pull-expr)
-         :in $ ?type pull-expr
-         :where [?e :inv/type ?type]]
-       db type pull-expr))
+  (d/q {:query '[:find (pull ?e pull-expr)
+                 :in $ ?type pull-expr
+                 :where [?e :inv/type ?type]]
+        :args     db type pull-expr
+        :io-context :items-by}))
