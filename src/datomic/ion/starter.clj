@@ -62,4 +62,4 @@
                  :in $ ?type pull-expr
                  :where [?e :inv/type ?type]]
         :args     [db type pull-expr]
-        :io-context :items-by}))
+        :io-context :query/items}))
