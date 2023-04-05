@@ -7,7 +7,7 @@
         com.datomic/ion {:mvn/version "1.0.62"}
         org.clojure/clojure {:mvn/version "1.10.1"}
         org.clojure/data.json {:mvn/version "0.2.6"}
-        com.datomic/dev.datafy {:git/sha "4a9dffb"
+        com.datomic/dev.datafy {:sha "4a9dffb"
                                 :git/tag "v0.1"
                                 :git/url "https://github.com/Datomic/dev.datafy.git"}}
  :mvn/repos {"datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}}}
