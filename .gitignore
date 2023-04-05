@@ -5,3 +5,5 @@ target/*
 .rebl/*
 REBL-*.jar
 .datomic-ions/*
+.nrepl-port
+ion-starter.iml
