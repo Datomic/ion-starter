@@ -11,6 +11,7 @@
 (defn get-schema
   "Lambda ion that returns database schema."
   [_]
+  (starter/ensure-sample-dataset)
   (-> (starter/get-db)
       starter/get-schema
       edn/write-str))
@@ -18,6 +19,7 @@
 (defn get-items-by-type
   "Lambda ion that returns items matching type."
   [{:keys [input]}]
+  (starter/ensure-sample-dataset)
   (-> (starter/get-db)
       (starter/get-items-by-type (-> input json/read-str keyword)
                              [:inv/sku :inv/size :inv/color])
