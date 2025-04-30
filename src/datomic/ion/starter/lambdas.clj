@@ -4,7 +4,6 @@
 (ns datomic.ion.starter.lambdas
   (:require
    [clojure.data.json :as json]
-   [datomic.client.api :as d]
    [datomic.ion.starter :as starter]
    [datomic.ion.starter.edn :as edn]))
 

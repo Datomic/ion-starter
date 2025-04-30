@@ -3,7 +3,6 @@
 
 (ns datomic.ion.starter.http
   (:require
-   [clojure.java.io :as io]
    [datomic.ion.starter :as starter]
    [datomic.ion.starter.edn :as edn]))
 
